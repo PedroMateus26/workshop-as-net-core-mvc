@@ -40,17 +40,13 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Seller seller)
         {
-           if (ModelState.IsValid)
-           {
-               var department = await  _departmentService.FindAllAsync();
-               var viewModel = new SellerFormViewModel { Seller=seller,Departments=department };
-               return View(viewModel);
-           }
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return View(seller);
+                var departments = await _departmentService.FindAllAsync();
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
             }
-           await _sellerService.InsertAsync(seller);
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index));
         }
 
@@ -102,10 +98,10 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Seller seller)
         {
-           if (ModelState.IsValid)
+           if (!ModelState.IsValid)
            {
-               var department =await _departmentService.FindAllAsync();
-               var viewModel = new SellerFormViewModel { Seller=seller,Departments=department };
+               var departments =await _departmentService.FindAllAsync();
+               var viewModel = new SellerFormViewModel { Seller=seller,Departments=departments };
                return View(viewModel);
            }
             if (id != seller.Id)
